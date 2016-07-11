@@ -1,0 +1,25 @@
+{
+	"shoot_interval_minutes": 1,
+	"image_width": 1600,
+	"image_height": 1200,
+	"camera_params": {
+		"--timeout": 1,
+		"--brightness": 50,
+		"--quality": 90,
+		"--hflip": null
+	},
+	"storages": [
+		{
+			"type": "local",
+			"path": "/path/to/local/dir"
+		},
+		{
+			"type": "dropbox",
+			"path": "/path/in/dropbox",
+			"key": "__app_key__",
+			"secret": "__app_secret__",
+			"token": "__app_token__"
+		}
+	],
+	"is_verbose": false
+}
