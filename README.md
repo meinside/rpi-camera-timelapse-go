@@ -95,6 +95,14 @@ If you want to launch it automatically on boot:
 $ sudo systemctl enable rpi-camera-timelapse-go.service
 ```
 
+## 5. How do I merge captured images to a timelapse video?
+
+Use ffmpeg:
+
+```bash
+$ ffmpeg -framerate 30 -pattern_type glob -i '*.jpg' -c:v libx264 timelapse.mp4
+```
+
 ## 998. Any trouble?
 
 Please open an issue.
