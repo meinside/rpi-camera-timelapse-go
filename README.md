@@ -18,7 +18,6 @@ You need:
 ## 2. How can I build it?
 
 ```bash
-$ go get -u github.com/stacktic/dropbox
 $ go get -u github.com/meinside/rpi-camera-timelapse-go
 $ cd $GOPATH/src/github.com/meinside/rpi-camera-timelapse-go
 $ go build
@@ -27,6 +26,7 @@ $ go build
 or
 
 ```bash
+$ go get -u github.com/stacktic/dropbox
 $ git clone https://github.com/meinside/rpi-camera-timelapse-go.git
 $ cd rpi-camera-timelapse-go
 $ go build
