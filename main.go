@@ -125,9 +125,15 @@ func init() {
 					storageConf.Secret,
 					storageConf.Token,
 					storageConf.Path))
+			default:
+				log.Printf("*** Unknown storage type: %s\n", storageConf.Type)
+				continue
 			}
 
 			log.Printf("Read storage config: %s\n", storageConf.Type)
+		}
+		if len(storageInterfaces) <= 0 {
+			panic("No storages were configured.")
 		}
 
 		// show verbose messages or not
