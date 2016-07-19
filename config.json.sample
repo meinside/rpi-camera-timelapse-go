@@ -14,6 +14,13 @@
 			"path": "/path/to/local/dir"
 		},
 		{
+			"type": "smtp",
+			"path": "recipient1@email1.com,recipient2@email2.com",
+			"key": "sender-address@gmail.com",
+			"secret": "smtp.gmail.com:587",
+			"token": "sender-password1234"
+		},
+		{
 			"type": "dropbox",
 			"path": "/path/in/dropbox",
 			"key": "__app_key__",

@@ -6,6 +6,7 @@ type StorageType string
 
 const (
 	TypeLocal   StorageType = "local"
+	TypeSmtp    StorageType = "smtp"
 	TypeDropbox StorageType = "dropbox"
 )
 

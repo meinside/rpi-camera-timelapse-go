@@ -125,6 +125,12 @@ func init() {
 					storageConf.Secret,
 					storageConf.Token,
 					storageConf.Path))
+			case storage.TypeSmtp:
+				storageInterfaces = append(storageInterfaces, storage.NewSmtpStorage(
+					storageConf.Key,
+					storageConf.Secret,
+					storageConf.Token,
+					storageConf.Path))
 			default:
 				log.Printf("*** Unknown storage type: %s\n", storageConf.Type)
 				continue
