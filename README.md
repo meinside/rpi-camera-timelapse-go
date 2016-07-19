@@ -43,13 +43,20 @@ $ cp config.json.sample config.json
 $ vi config.json
 ```
 
-You can configure it to save files locally or on Dropbox like this:
+You can configure it to save files locally, send via SMTP, or upload to Dropbox like this:
 
 ```json
 "storages": [
 	{
 		"type": "local",
 		"path": "/home/meinside/photos/timelapse"
+	},
+	{
+		"type": "smtp",
+		"path": "recipient-email-address1@outlook.com,recipient-email-address2@yahoo.com",
+		"key": "sender-email-address@email.com",
+		"secret": "sender.smtp-server.com:587",
+		"token": "sender-email-password"
 	},
 	{
 		"type": "dropbox",
@@ -61,7 +68,7 @@ You can configure it to save files locally or on Dropbox like this:
 ]
 ```
 
-When not needed, just remove it from the config file.
+When not needed, just remove the unwanted one from __storages__.
 
 After the configuration is finished, just execute the binary:
 
@@ -69,7 +76,7 @@ After the configuration is finished, just execute the binary:
 $ ./rpi-cameera-timelapse-go
 ```
 
-If nothing goes wrong, images will be captured and stored as you configured.
+If nothing goes wrong, images will be captured and stored periodically as you configured.
 
 ## 4. How can I run it as a service?
 
