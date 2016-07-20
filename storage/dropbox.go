@@ -14,6 +14,10 @@ type DropboxStorage struct {
 }
 
 func NewDropboxStorage(key, secret, token, path *string) *DropboxStorage {
+	if key == nil || secret == nil || token == nil || path == nil {
+		panic("Parameter missing or invalid for Dropbox")
+	}
+
 	box := dropbox.NewDropbox()
 	box.SetAppInfo(*key, *secret)
 	box.SetAccessToken(*token)

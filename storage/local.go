@@ -13,6 +13,10 @@ type LocalStorage struct {
 }
 
 func NewLocalStorage(path *string) *LocalStorage {
+	if path == nil {
+		panic("Parameter missing or invalid for Local")
+	}
+
 	return &LocalStorage{
 		path: path,
 	}

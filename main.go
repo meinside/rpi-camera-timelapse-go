@@ -114,29 +114,32 @@ func init() {
 		cameraParams = conf.CameraParams
 
 		// storage configurations
+		var loaded storage.Interface
 		storageInterfaces = []storage.Interface{}
 		for _, storageConf := range conf.StorageConfigs {
 			switch storageConf.Type {
 			case storage.TypeLocal:
-				storageInterfaces = append(storageInterfaces, storage.NewLocalStorage(storageConf.Path))
+				loaded = storage.NewLocalStorage(storageConf.Path)
 			case storage.TypeDropbox:
-				storageInterfaces = append(storageInterfaces, storage.NewDropboxStorage(
-					storageConf.Key,
-					storageConf.Secret,
-					storageConf.Token,
-					storageConf.Path))
+				loaded = storage.NewDropboxStorage(
+					storageConf.DropboxKey,
+					storageConf.DropboxSecret,
+					storageConf.DropboxToken,
+					storageConf.Path)
 			case storage.TypeSmtp:
-				storageInterfaces = append(storageInterfaces, storage.NewSmtpStorage(
-					storageConf.Key,
-					storageConf.Secret,
-					storageConf.Token,
-					storageConf.Path))
+				loaded = storage.NewSmtpStorage(
+					storageConf.SmtpEmail,
+					storageConf.SmtpServer,
+					storageConf.SmtpPasswd,
+					storageConf.SmtpRecipients)
 			default:
 				log.Printf("*** Unknown storage type: %s\n", storageConf.Type)
 				continue
 			}
 
-			log.Printf("Read storage config: %s\n", storageConf.Type)
+			log.Printf("Storage config loaded: %s\n", storageConf.Type)
+
+			storageInterfaces = append(storageInterfaces, loaded)
 		}
 		if len(storageInterfaces) <= 0 {
 			panic("No storages were configured.")

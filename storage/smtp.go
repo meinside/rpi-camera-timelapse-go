@@ -28,6 +28,10 @@ type SmtpStorage struct {
 }
 
 func NewSmtpStorage(senderEmail, senderServer, senderPasswd, recipientEmails *string) *SmtpStorage {
+	if senderEmail == nil || senderServer == nil || senderPasswd == nil || recipientEmails == nil {
+		panic("Parameter missing or invalid for SMTP")
+	}
+
 	auth := smtp.PlainAuth(
 		"",
 		*senderEmail,

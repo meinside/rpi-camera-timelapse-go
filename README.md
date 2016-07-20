@@ -53,17 +53,17 @@ You can configure it to save files locally, send via SMTP, or upload to Dropbox 
 	},
 	{
 		"type": "smtp",
-		"path": "recipient-email-address1@outlook.com,recipient-email-address2@yahoo.com",
-		"key": "sender-email-address@email.com",
-		"secret": "sender.smtp-server.com:587",
-		"token": "sender-email-password"
+		"smtp_recipients": "recipient-email-address1@outlook.com,recipient-email-address2@yahoo.com",
+		"smtp_email": "sender-email-address@email.com",
+		"smtp_passwd": "sender-email-password",
+		"smtp_server": "sender.smtp-server.com:587"
 	},
 	{
 		"type": "dropbox",
 		"path": "/timelapse",
-		"key": "0a1b2c3d4e5f6g",
-		"secret": "0987654321jihgfedcba",
-		"token": "Tttttttt_oOOOOOOO-kkkkkkkk-eeeeeee_NNNNNNNN"
+		"dropbox_key": "0a1b2c3d4e5f6g",
+		"dropbox_secret": "0987654321jihgfedcba",
+		"dropbox_token": "Tttttttt_oOOOOOOO-kkkkkkkk-eeeeeee_NNNNNNNN"
 	}
 ]
 ```

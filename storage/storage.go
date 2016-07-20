@@ -11,11 +11,21 @@ const (
 )
 
 type Config struct {
-	Type   StorageType `json:"type"`
-	Path   *string     `json:"path"`
-	Key    *string     `json:"key,omitempty"`
-	Secret *string     `json:"secret,omitempty"`
-	Token  *string     `json:"token,omitempty"`
+	Type StorageType `json:"type"`
+
+	// for local & dropbox
+	Path *string `json:"path,omitempty"`
+
+	// for SMTP
+	SmtpRecipients *string `json:"smtp_recipients,omitempty"`
+	SmtpEmail      *string `json:"smtp_email,omitempty"`
+	SmtpPasswd     *string `json:"smtp_passwd,omitempty"`
+	SmtpServer     *string `json:"smtp_server,omitempty"`
+
+	// for dropbox
+	DropboxKey    *string `json:"dropbox_key,omitempty"`
+	DropboxSecret *string `json:"dropbox_secret,omitempty"`
+	DropboxToken  *string `json:"dropbox_token,omitempty"`
 }
 
 type Interface interface {
