@@ -73,7 +73,7 @@ When not needed, just remove the unwanted one from __storages__.
 After the configuration is finished, just execute the binary:
 
 ```bash
-$ ./rpi-cameera-timelapse-go
+$ ./rpi-camera-timelapse-go
 ```
 
 If nothing goes wrong, images will be captured and stored periodically as you configured.
