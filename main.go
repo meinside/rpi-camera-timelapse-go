@@ -6,29 +6,22 @@ import (
 	"io/ioutil"
 	"log"
 	"os"
-	"os/exec"
 	"os/signal"
 	"path"
 	"path/filepath"
 	"runtime"
-	"strconv"
 	"sync"
 	"syscall"
 	"time"
 
 	storage "github.com/meinside/rpi-camera-timelapse-go/storage"
+	camera "github.com/meinside/rpi-tools/hardware"
 )
 
 const (
-	// constants for config
 	ConfigFilename = "./config.json"
 
-	// absolute path of raspistill
-	RaspiStillBin = "/usr/bin/raspistill"
-
-	// temp directory
-	RecommendedTempDir = "/var/tmp" // 'tmpfs /var/tmp tmpfs nodev,nosuid,size=10M 0 0' in /etc/fstab
-	DefaultTempDir     = "/tmp"
+	ImageExtension = "jpg"
 
 	NumQueue                    = 4
 	DefaultShootIntervalMinutes = 1
@@ -49,7 +42,6 @@ type config struct {
 var cameraLock sync.Mutex
 
 type ShootRequest struct {
-	Directory    string
 	ImageWidth   int
 	ImageHeight  int
 	CameraParams map[string]interface{}
@@ -60,7 +52,6 @@ var captureChannel chan ShootRequest
 var shootIntervalMinutes int
 var imageWidth, imageHeight int
 var cameraParams map[string]interface{}
-var tmpDir string
 var storageInterfaces []storage.Interface
 var isVerbose bool
 
@@ -85,15 +76,6 @@ func init() {
 	if conf, err := getConfig(); err != nil {
 		panic(err)
 	} else {
-		// temporary directory
-		tmpDir = RecommendedTempDir
-		if _, err := os.Stat(tmpDir); err != nil {
-			if os.IsNotExist(err) { // file does not exist
-				tmpDir = DefaultTempDir
-			}
-		}
-		log.Printf("Using temporary directory: %s\n", tmpDir)
-
 		// interval
 		shootIntervalMinutes = conf.ShootIntervalMinutes
 		if shootIntervalMinutes <= 0 {
@@ -159,14 +141,15 @@ func capture(req ShootRequest) bool {
 	defer cameraLock.Unlock()
 
 	// capture image
-	if filepath, err := captureImage(req.Directory, req.ImageWidth, req.ImageHeight, req.CameraParams); err == nil {
-		defer removeImage(filepath)
+	if bytes, err := camera.CaptureRaspiStill(req.ImageWidth, req.ImageHeight, req.CameraParams); err == nil {
+		// generate a filename with current timestamp
+		filename := fmt.Sprintf("%.4f.%s", float64(time.Now().UnixNano())/float64(time.Millisecond), ImageExtension)
 
 		// store captured image
 		for _, storage := range storageInterfaces {
-			if err := storage.Save(&filepath); err == nil {
+			if err := storage.Save(filename, bytes); err == nil {
 				if isVerbose {
-					log.Printf("Saved %s to storage: %+v\n", filepath, storage)
+					log.Printf("Saved %d bytes to storage: %+v\n", len(bytes), storage)
 				}
 				result = true
 			} else {
@@ -178,44 +161,6 @@ func capture(req ShootRequest) bool {
 	}
 
 	return result
-}
-
-// capture an image with given width, height, and other parameters
-// return the captured image's filepath (for deleting it after use)
-func captureImage(directory string, width, height int, cameraParams map[string]interface{}) (filepath string, err error) {
-	// filepath
-	filepath = fmt.Sprintf("%s/captured_%d.jpg", directory, time.Now().UnixNano()/int64(time.Millisecond))
-
-	// command line arguments
-	args := []string{
-		"-w", strconv.Itoa(width),
-		"-h", strconv.Itoa(height),
-		"-o", filepath,
-	}
-	for k, v := range cameraParams {
-		args = append(args, k)
-		if v != nil {
-			args = append(args, fmt.Sprintf("%v", v))
-		}
-	}
-
-	// execute command
-	if bytes, err := exec.Command(RaspiStillBin, args...).CombinedOutput(); err != nil {
-		log.Printf("*** Error running %s: %s\n", RaspiStillBin, string(bytes))
-		return "", err
-	} else {
-		if isVerbose {
-			log.Printf("Captured image: %s\n", filepath)
-		}
-		return filepath, nil
-	}
-}
-
-// remove temporary image
-func removeImage(filepath string) {
-	if err := os.Remove(filepath); err != nil {
-		log.Printf("*** Failed to delete temp file: %s\n", err)
-	}
 }
 
 func main() {
@@ -237,7 +182,6 @@ func main() {
 		select {
 		case <-timer.C:
 			capture(ShootRequest{
-				Directory:    tmpDir,
 				ImageWidth:   imageWidth,
 				ImageHeight:  imageHeight,
 				CameraParams: cameraParams,

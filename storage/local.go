@@ -1,6 +1,7 @@
 package storage
 
 import (
+	bt "bytes"
 	"io"
 	"os"
 	path "path/filepath"
@@ -22,19 +23,15 @@ func NewLocalStorage(path *string) *LocalStorage {
 	}
 }
 
-func (s *LocalStorage) Save(filepath *string) error {
-	if sf, err := os.Open(*filepath); err == nil {
-		defer sf.Close()
+func (s *LocalStorage) Save(filename string, bytes []byte) error {
+	src := bt.NewReader(bytes)
+	dst := path.Join(*s.path, filename)
 
-		destination := path.Join(*s.path, path.Base(*filepath))
-		if df, err := os.Create(destination); err == nil {
-			defer df.Close()
+	if df, err := os.Create(dst); err == nil {
+		defer df.Close()
 
-			_, err := io.Copy(df, sf)
-			return err
-		} else {
-			return err
-		}
+		_, err := io.Copy(df, src)
+		return err
 	} else {
 		return err
 	}

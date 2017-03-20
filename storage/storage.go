@@ -29,5 +29,5 @@ type Config struct {
 }
 
 type Interface interface {
-	Save(filepath *string) error
+	Save(filename string, bytes []byte) error
 }

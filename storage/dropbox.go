@@ -1,6 +1,8 @@
 package storage
 
 import (
+	bt "bytes"
+	"io/ioutil"
 	path "path/filepath"
 
 	dropbox "github.com/stacktic/dropbox"
@@ -28,7 +30,13 @@ func NewDropboxStorage(key, secret, token, path *string) *DropboxStorage {
 	}
 }
 
-func (s *DropboxStorage) Save(filepath *string) error {
-	_, err := s.dropbox.UploadFile(*filepath, path.Join(*s.path, path.Base(*filepath)), true, "")
+func (s *DropboxStorage) Save(filename string, bytes []byte) error {
+	reader := ioutil.NopCloser(bt.NewReader(bytes))
+	defer reader.Close()
+
+	length := int64(len(bytes))
+	dst := path.Join(*s.path, filename)
+
+	_, err := s.dropbox.FilesPut(reader, length, dst, true, "")
 	return err
 }
