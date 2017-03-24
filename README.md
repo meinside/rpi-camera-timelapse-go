@@ -23,15 +23,6 @@ $ cd $GOPATH/src/github.com/meinside/rpi-camera-timelapse-go
 $ go build
 ```
 
-or
-
-```bash
-$ go get -u github.com/stacktic/dropbox
-$ git clone https://github.com/meinside/rpi-camera-timelapse-go.git
-$ cd rpi-camera-timelapse-go
-$ go build
-```
-
 ## 3. How can I run it?
 
 You need to create your own config file.
