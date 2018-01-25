@@ -23,9 +23,7 @@ type Config struct {
 	SmtpServer     *string `json:"smtp_server,omitempty"`
 
 	// for dropbox
-	DropboxKey    *string `json:"dropbox_key,omitempty"`
-	DropboxSecret *string `json:"dropbox_secret,omitempty"`
-	DropboxToken  *string `json:"dropbox_token,omitempty"`
+	DropboxToken *string `json:"dropbox_token,omitempty"`
 }
 
 type Interface interface {

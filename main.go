@@ -104,8 +104,6 @@ func init() {
 				loaded = storage.NewLocalStorage(storageConf.Path)
 			case storage.TypeDropbox:
 				loaded = storage.NewDropboxStorage(
-					storageConf.DropboxKey,
-					storageConf.DropboxSecret,
 					storageConf.DropboxToken,
 					storageConf.Path)
 			case storage.TypeSmtp:

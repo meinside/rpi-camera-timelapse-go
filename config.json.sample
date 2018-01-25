@@ -23,8 +23,6 @@
 		{
 			"type": "dropbox",
 			"path": "/path/in/dropbox",
-			"dropbox_key": "__app_key__",
-			"dropbox_secret": "__app_secret__",
 			"dropbox_token": "__app_token__"
 		}
 	],
