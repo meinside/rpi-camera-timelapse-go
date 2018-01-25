@@ -52,8 +52,6 @@ You can configure it to save files locally, send via SMTP, or upload to Dropbox 
 	{
 		"type": "dropbox",
 		"path": "/timelapse",
-		"dropbox_key": "0a1b2c3d4e5f6g",
-		"dropbox_secret": "0987654321jihgfedcba",
 		"dropbox_token": "Tttttttt_oOOOOOOO-kkkkkkkk-eeeeeee_NNNNNNNN"
 	}
 ]
