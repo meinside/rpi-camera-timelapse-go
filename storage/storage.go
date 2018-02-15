@@ -8,12 +8,13 @@ const (
 	TypeLocal   StorageType = "local"
 	TypeSmtp    StorageType = "smtp"
 	TypeDropbox StorageType = "dropbox"
+	TypeS3      StorageType = "s3"
 )
 
 type Config struct {
 	Type StorageType `json:"type"`
 
-	// for local & dropbox
+	// for local, dropbox, and S3
 	Path *string `json:"path,omitempty"`
 
 	// for SMTP
@@ -24,6 +25,9 @@ type Config struct {
 
 	// for dropbox
 	DropboxToken *string `json:"dropbox_token,omitempty"`
+
+	// for S3
+	S3Bucket *string `json:"s3_bucket,omitempty"`
 }
 
 type Interface interface {

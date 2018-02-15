@@ -112,6 +112,8 @@ func init() {
 					storageConf.SmtpServer,
 					storageConf.SmtpPasswd,
 					storageConf.SmtpRecipients)
+			case storage.TypeS3:
+				loaded = storage.NewS3Storage(storageConf.S3Bucket, storageConf.Path)
 			default:
 				log.Printf("*** Unknown storage type: %s\n", storageConf.Type)
 				continue

@@ -24,6 +24,11 @@
 			"type": "dropbox",
 			"path": "/path/in/dropbox",
 			"dropbox_token": "__app_token__"
+		},
+		{
+			"type": "s3",
+			"path": "/optional/directory/in/bucket",
+			"s3_bucket": "my-s3-bucket-name"
 		}
 	],
 	"is_verbose": false

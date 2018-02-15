@@ -34,7 +34,7 @@ $ cp config.json.sample config.json
 $ vi config.json
 ```
 
-You can configure it to save files locally, send via SMTP, or upload to Dropbox like this:
+You can configure it to save files locally, send via SMTP, upload to Dropbox or S3 like this:
 
 ```json
 "storages": [
@@ -53,6 +53,11 @@ You can configure it to save files locally, send via SMTP, or upload to Dropbox 
 		"type": "dropbox",
 		"path": "/timelapse",
 		"dropbox_token": "Tttttttt_oOOOOOOO-kkkkkkkk-eeeeeee_NNNNNNNN"
+	},
+	{
+		"type": "s3",
+		"path": "/optional/directory/in/bucket",
+		"s3_bucket": "my-s3-bucket-name"
 	}
 ]
 ```
