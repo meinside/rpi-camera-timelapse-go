@@ -8,6 +8,7 @@ import (
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/s3/s3manager"
 	"path/filepath"
+	"fmt"
 )
 
 // storage interface for saving files in an S3 bucket
@@ -54,4 +55,8 @@ func (instance *S3Storage) Save(filename string, bytes []byte) error {
 	})
 
 	return err
+}
+
+func (instance *S3Storage) String() string {
+	return fmt.Sprintf("S3 bucket %s/%s", *instance.bucket, *instance.path)
 }
