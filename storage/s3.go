@@ -23,6 +23,11 @@ func NewS3Storage(bucket, path *string) *S3Storage {
 		panic("Bucket parameter missing for S3 storage")
 	}
 
+	// use empty path if not specified in config, avoiding panic later on
+	if path == nil {
+		path = aws.String("")
+	}
+
 	// The session the S3 Uploader will use, credentials is read
 	// from default places where AWS CLI usually finds them
 	// e.g. environment variables or ~/.aws/credentials

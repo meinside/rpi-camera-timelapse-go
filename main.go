@@ -10,6 +10,8 @@ import (
 	"path"
 	"path/filepath"
 	"runtime"
+	"strconv"
+	"strings"
 	"sync"
 	"syscall"
 	"time"
@@ -30,6 +32,7 @@ const (
 )
 
 type config struct {
+	ShootWithinHours     string                 `json:"shoot_within_hours"` // e.g. 13-18
 	ShootIntervalMinutes int                    `json:"shoot_interval_minutes"`
 	ImageWidth           int                    `json:"image_width"`
 	ImageHeight          int                    `json:"image_height"`
@@ -47,9 +50,19 @@ type ShootRequest struct {
 	CameraParams map[string]interface{}
 }
 
+type ShootWithinHoursConfig struct {
+	From int
+	To   int
+}
+
+func (hoursConfig ShootWithinHoursConfig) ShouldCapture(now time.Time) bool {
+	return now.Hour() >= hoursConfig.From && now.Hour() <= hoursConfig.To
+}
+
 // variables
 var captureChannel chan ShootRequest
 var shootIntervalMinutes int
+var shootWithinHours ShootWithinHoursConfig
 var imageWidth, imageHeight int
 var cameraParams map[string]interface{}
 var storageInterfaces []storage.Interface
@@ -81,6 +94,9 @@ func init() {
 		if shootIntervalMinutes <= 0 {
 			shootIntervalMinutes = DefaultShootIntervalMinutes
 		}
+
+		// shoot within hours: from-to
+		shootWithinHours = interpretWithinHours(conf.ShootWithinHours)
 
 		// image width * height
 		imageWidth = conf.ImageWidth
@@ -132,6 +148,29 @@ func init() {
 	}
 }
 
+// parse 'shoot_within_hours' option
+func interpretWithinHours(delimitedWithinHours string) ShootWithinHoursConfig {
+	hours := strings.Split(delimitedWithinHours, "-")
+
+	if len(hours) != 2 {
+		return ShootWithinHoursConfig{0, 24}
+	}
+
+	from, err := strconv.Atoi(hours[0])
+	if err != nil {
+		from = 0
+		log.Println("Invalid shoot_within_hours from, will use 0")
+	}
+
+	to, err := strconv.Atoi(hours[1])
+	if err != nil {
+		to = 24
+		log.Println("Invalid shoot_within_hours to, will use 24")
+	}
+
+	return ShootWithinHoursConfig{from, to}
+}
+
 // capture
 func capture(req ShootRequest) bool {
 	// process result
@@ -139,6 +178,13 @@ func capture(req ShootRequest) bool {
 
 	cameraLock.Lock()
 	defer cameraLock.Unlock()
+
+	if !shootWithinHours.ShouldCapture(time.Now()) {
+		if isVerbose {
+			log.Println("Aborting capture as not within configured shooting hours")
+		}
+		return result
+	}
 
 	// capture image
 	if bytes, err := camera.CaptureRaspiStill(req.ImageWidth, req.ImageHeight, req.CameraParams); err == nil {
@@ -164,7 +210,7 @@ func capture(req ShootRequest) bool {
 }
 
 func main() {
-	log.Printf("Starting up...")
+	log.Println("Starting up...")
 
 	timer := time.NewTicker(time.Duration(shootIntervalMinutes) * time.Minute)
 	quitter := make(chan struct{})
@@ -177,6 +223,13 @@ func main() {
 		quitter <- struct{}{}
 	}()
 
+	// capture a photo immediately before starting the infinite loop
+	capture(ShootRequest{
+		ImageWidth:   imageWidth,
+		ImageHeight:  imageHeight,
+		CameraParams: cameraParams,
+	})
+
 	// infinite loop
 	for {
 		select {
@@ -187,7 +240,7 @@ func main() {
 				CameraParams: cameraParams,
 			})
 		case <-quitter:
-			log.Printf("Shutting down...")
+			log.Println("Shutting down...")
 			os.Exit(1)
 		}
 	}
