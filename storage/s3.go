@@ -45,7 +45,7 @@ func (instance *S3Storage) Save(filename string, bytes []byte) error {
 	reader := ioutil.NopCloser(bt.NewReader(bytes))
 	defer reader.Close()
 
-	objectKey := filepath.Join(*instance.bucket, *instance.path, filename)
+	objectKey := filepath.Join(*instance.path, filename)
 
 	_, err := instance.uploader.Upload(&s3manager.UploadInput{
 		ACL:    aws.String("public-read"),
