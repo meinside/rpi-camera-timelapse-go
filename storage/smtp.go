@@ -11,12 +11,13 @@ import (
 )
 
 const (
-	MaxLineLength = 500
+	maxLineLength = 500
 )
 
 // storage interface for saving files through SMTP
 
-type SmtpStorage struct {
+// SMTPStorage struct
+type SMTPStorage struct {
 	senderEmail     *string
 	senderPasswd    *string
 	senderServer    *string
@@ -25,7 +26,8 @@ type SmtpStorage struct {
 	auth smtp.Auth
 }
 
-func NewSmtpStorage(senderEmail, senderServer, senderPasswd, recipientEmails *string) *SmtpStorage {
+// NewSMTPStorage creates a new SMTPStorage
+func NewSMTPStorage(senderEmail, senderServer, senderPasswd, recipientEmails *string) *SMTPStorage {
 	if senderEmail == nil || senderServer == nil || senderPasswd == nil || recipientEmails == nil {
 		panic("Parameter missing or invalid for SMTP")
 	}
@@ -37,7 +39,7 @@ func NewSmtpStorage(senderEmail, senderServer, senderPasswd, recipientEmails *st
 		strings.Split(*senderServer, ":")[0], // XXX - without port number
 	)
 
-	return &SmtpStorage{
+	return &SMTPStorage{
 		senderEmail:     senderEmail,
 		senderPasswd:    senderPasswd,
 		senderServer:    senderServer,
@@ -46,8 +48,10 @@ func NewSmtpStorage(senderEmail, senderServer, senderPasswd, recipientEmails *st
 	}
 }
 
+// Save sends a file with bytes
+//
 // referenced: http://www.robertmulley.com/golang/sending-emails-with-attachments/
-func (s *SmtpStorage) Save(filename string, bytes []byte) error {
+func (s *SMTPStorage) Save(filename string, bytes []byte) error {
 	// captured time
 	now := time.Now().Format("2006-01-02 15:04:05")
 
@@ -63,12 +67,12 @@ func (s *SmtpStorage) Save(filename string, bytes []byte) error {
 
 	// attachment part
 	encodedFile := base64.StdEncoding.EncodeToString(bytes)
-	numLines := len(encodedFile) / MaxLineLength
+	numLines := len(encodedFile) / maxLineLength
 	var buf bt.Buffer
 	for i := 0; i < numLines; i++ {
-		buf.WriteString(encodedFile[i*MaxLineLength:(i+1)*MaxLineLength] + "\n")
+		buf.WriteString(encodedFile[i*maxLineLength:(i+1)*maxLineLength] + "\n")
 	}
-	buf.WriteString(encodedFile[numLines*MaxLineLength:])
+	buf.WriteString(encodedFile[numLines*maxLineLength:])
 	attachment := fmt.Sprintf("Content-type: image/jpeg; name=\"%s\"\r\nContent-Transfer-Encoding:base64\r\nContent-Disposition: attachment; filename=\"%s\"\r\n\r\n%s\r\n--%s--", filename, filename, buf.String(), boundary)
 
 	return smtp.SendMail(

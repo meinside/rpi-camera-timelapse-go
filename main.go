@@ -21,14 +21,13 @@ import (
 )
 
 const (
-	ConfigFilename = "./config.json"
+	configFilename = "./config.json"
 
-	ImageExtension = "jpg"
+	imageExtension = "jpg"
 
-	NumQueue                    = 4
-	DefaultShootIntervalMinutes = 1
-	MinImageWidth               = 400
-	MinImageHeight              = 300
+	defaultShootIntervalMinutes = 1
+	minImageWidth               = 400
+	minImageHeight              = 300
 )
 
 type config struct {
@@ -44,17 +43,20 @@ type config struct {
 // for making sure the camera is not used simultaneously
 var cameraLock sync.Mutex
 
+// ShootRequest type
 type ShootRequest struct {
 	ImageWidth   int
 	ImageHeight  int
 	CameraParams map[string]interface{}
 }
 
+// ShootWithinHoursConfig type
 type ShootWithinHoursConfig struct {
 	From int
 	To   int
 }
 
+// ShouldCapture checks if it is a right time to capture.
 func (hoursConfig ShootWithinHoursConfig) ShouldCapture(now time.Time) bool {
 	return now.Hour() >= hoursConfig.From && now.Hour() <= hoursConfig.To
 }
@@ -72,16 +74,18 @@ var isVerbose bool
 func getConfig() (config, error) {
 	_, filename, _, _ := runtime.Caller(0) // = __FILE__
 
-	if file, err := ioutil.ReadFile(filepath.Join(path.Dir(filename), ConfigFilename)); err == nil {
+	file, err := ioutil.ReadFile(filepath.Join(path.Dir(filename), configFilename))
+
+	if err == nil {
 		var conf config
-		if err := json.Unmarshal(file, &conf); err == nil {
+		err = json.Unmarshal(file, &conf)
+
+		if err == nil {
 			return conf, nil
-		} else {
-			return config{}, err
 		}
-	} else {
-		return config{}, err
 	}
+
+	return config{}, err
 }
 
 func init() {
@@ -92,7 +96,7 @@ func init() {
 		// interval
 		shootIntervalMinutes = conf.ShootIntervalMinutes
 		if shootIntervalMinutes <= 0 {
-			shootIntervalMinutes = DefaultShootIntervalMinutes
+			shootIntervalMinutes = defaultShootIntervalMinutes
 		}
 
 		// shoot within hours: from-to
@@ -100,12 +104,12 @@ func init() {
 
 		// image width * height
 		imageWidth = conf.ImageWidth
-		if imageWidth < MinImageWidth {
-			imageWidth = MinImageWidth
+		if imageWidth < minImageWidth {
+			imageWidth = minImageWidth
 		}
 		imageHeight = conf.ImageHeight
-		if imageHeight < MinImageHeight {
-			imageHeight = MinImageHeight
+		if imageHeight < minImageHeight {
+			imageHeight = minImageHeight
 		}
 
 		// other camera params
@@ -122,12 +126,13 @@ func init() {
 				loaded = storage.NewDropboxStorage(
 					storageConf.DropboxToken,
 					storageConf.Path)
-			case storage.TypeSmtp:
-				loaded = storage.NewSmtpStorage(
-					storageConf.SmtpEmail,
-					storageConf.SmtpServer,
-					storageConf.SmtpPasswd,
-					storageConf.SmtpRecipients)
+			case storage.TypeSMTP:
+				loaded = storage.NewSMTPStorage(
+					storageConf.SMTPEmail,
+					storageConf.SMTPServer,
+					storageConf.SMTPPasswd,
+					storageConf.SMTPRecipients,
+				)
 			case storage.TypeS3:
 				loaded = storage.NewS3Storage(storageConf.S3Bucket, storageConf.Path)
 			default:
@@ -189,7 +194,7 @@ func capture(req ShootRequest) bool {
 	// capture image
 	if bytes, err := camera.CaptureRaspiStill(req.ImageWidth, req.ImageHeight, req.CameraParams); err == nil {
 		// generate a filename with current timestamp
-		filename := fmt.Sprintf("%s.%s", time.Now().Format(time.RFC3339), ImageExtension)
+		filename := fmt.Sprintf("%s.%s", time.Now().Format(time.RFC3339), imageExtension)
 
 		// store captured image
 		for _, storage := range storageInterfaces {

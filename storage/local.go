@@ -9,10 +9,12 @@ import (
 
 // storage interface for saving files locally
 
+// LocalStorage struct
 type LocalStorage struct {
 	path *string
 }
 
+// NewLocalStorage creates a new LocalStorage
 func NewLocalStorage(path *string) *LocalStorage {
 	if path == nil {
 		panic("Parameter missing or invalid for Local")
@@ -23,16 +25,19 @@ func NewLocalStorage(path *string) *LocalStorage {
 	}
 }
 
+// Save saves a file with bytes
 func (s *LocalStorage) Save(filename string, bytes []byte) error {
 	src := bt.NewReader(bytes)
 	dst := path.Join(*s.path, filename)
 
-	if df, err := os.Create(dst); err == nil {
+	df, err := os.Create(dst)
+
+	if err == nil {
 		defer df.Close()
 
 		_, err := io.Copy(df, src)
 		return err
-	} else {
-		return err
 	}
+
+	return err
 }
