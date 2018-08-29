@@ -2,26 +2,29 @@ package storage
 
 // storage interface
 
-type StorageType string
+// Type type
+type Type string
 
+// types
 const (
-	TypeLocal   StorageType = "local"
-	TypeSmtp    StorageType = "smtp"
-	TypeDropbox StorageType = "dropbox"
-	TypeS3      StorageType = "s3"
+	TypeLocal   Type = "local"
+	TypeSMTP    Type = "smtp"
+	TypeDropbox Type = "dropbox"
+	TypeS3      Type = "s3"
 )
 
+// Config struct
 type Config struct {
-	Type StorageType `json:"type"`
+	Type Type `json:"type"`
 
 	// for local, dropbox, and S3
 	Path *string `json:"path,omitempty"`
 
 	// for SMTP
-	SmtpRecipients *string `json:"smtp_recipients,omitempty"`
-	SmtpEmail      *string `json:"smtp_email,omitempty"`
-	SmtpPasswd     *string `json:"smtp_passwd,omitempty"`
-	SmtpServer     *string `json:"smtp_server,omitempty"`
+	SMTPRecipients *string `json:"smtp_recipients,omitempty"`
+	SMTPEmail      *string `json:"smtp_email,omitempty"`
+	SMTPPasswd     *string `json:"smtp_passwd,omitempty"`
+	SMTPServer     *string `json:"smtp_server,omitempty"`
 
 	// for dropbox
 	DropboxToken *string `json:"dropbox_token,omitempty"`
@@ -30,6 +33,7 @@ type Config struct {
 	S3Bucket *string `json:"s3_bucket,omitempty"`
 }
 
+// Interface for interfacing
 type Interface interface {
 	Save(filename string, bytes []byte) error
 }

@@ -11,11 +11,14 @@ import (
 
 // storage interface for saving files on Dropbox
 
+// DropboxStorage struct
 type DropboxStorage struct {
 	path   string
 	client files.Client
 }
 
+// NewDropboxStorage creates a new DropboxStorage
+//
 // `token` can be obtained/generated in:
 // Dropbox Developers page > My apps > Your App > Settings
 func NewDropboxStorage(token, path *string) *DropboxStorage {
@@ -31,6 +34,7 @@ func NewDropboxStorage(token, path *string) *DropboxStorage {
 	}
 }
 
+// Save saves a file with bytes
 func (s *DropboxStorage) Save(filename string, bytes []byte) error {
 	reader := ioutil.NopCloser(bt.NewReader(bytes))
 	defer reader.Close()

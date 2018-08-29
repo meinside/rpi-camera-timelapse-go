@@ -4,21 +4,24 @@ import (
 	bt "bytes"
 	"io/ioutil"
 
+	"fmt"
+	"path/filepath"
+
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/s3/s3manager"
-	"path/filepath"
-	"fmt"
 )
 
 // storage interface for saving files in an S3 bucket
 
+// S3Storage struct
 type S3Storage struct {
-	bucket *string
-	path   *string
+	bucket   *string
+	path     *string
 	uploader *s3manager.Uploader
 }
 
+// NewS3Storage creates a new S3Storage
 func NewS3Storage(bucket, path *string) *S3Storage {
 	if bucket == nil {
 		panic("Bucket parameter missing for S3 storage")
@@ -41,6 +44,7 @@ func NewS3Storage(bucket, path *string) *S3Storage {
 	return &S3Storage{bucket, path, uploader}
 }
 
+// Save saves given file with bytes
 func (instance *S3Storage) Save(filename string, bytes []byte) error {
 	reader := ioutil.NopCloser(bt.NewReader(bytes))
 	defer reader.Close()
