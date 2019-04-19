@@ -87,7 +87,7 @@ If nothing goes wrong, images will be captured and stored periodically as you co
 ### B. With docker-compose
 
 ```bash
-$ docker-compose run app
+$ docker-compose up
 ```
 
 ## 4. How can I run it as a service?

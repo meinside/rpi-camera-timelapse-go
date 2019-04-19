@@ -18,7 +18,7 @@ RUN CGO_ENABLED=0 go build \
 		-o /app \
 		.
 
-FROM balenalib/raspberrypi3:latest AS final
+FROM balenalib/raspberrypi3-debian:latest AS final
 
 # Copy files from temporary image
 COPY --from=builder /app /
