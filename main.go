@@ -7,9 +7,7 @@ import (
 	"log"
 	"os"
 	"os/signal"
-	"path"
 	"path/filepath"
-	"runtime"
 	"strconv"
 	"strings"
 	"sync"
@@ -21,7 +19,7 @@ import (
 )
 
 const (
-	configFilename = "./config.json"
+	configFilename = "config.json"
 
 	imageExtension = "jpg"
 
@@ -71,17 +69,15 @@ var storageInterfaces []storage.Interface
 var isVerbose bool
 
 // Read config
-func getConfig() (config, error) {
-	_, filename, _, _ := runtime.Caller(0) // = __FILE__
-
-	file, err := ioutil.ReadFile(filepath.Join(path.Dir(filename), configFilename))
-
-	if err == nil {
-		var conf config
-		err = json.Unmarshal(file, &conf)
-
+func getConfig() (conf config, err error) {
+	var execFilepath string
+	if execFilepath, err = os.Executable(); err == nil {
+		file, err := ioutil.ReadFile(filepath.Join(filepath.Dir(execFilepath), configFilename))
 		if err == nil {
-			return conf, nil
+			err = json.Unmarshal(file, &conf)
+			if err == nil {
+				return conf, nil
+			}
 		}
 	}
 
@@ -136,16 +132,16 @@ func init() {
 			case storage.TypeS3:
 				loaded = storage.NewS3Storage(storageConf.S3Bucket, storageConf.Path)
 			default:
-				log.Printf("*** Unknown storage type: %s\n", storageConf.Type)
+				log.Printf("*** unknown storage type: %s", storageConf.Type)
 				continue
 			}
 
-			log.Printf("Storage config loaded: %s\n", storageConf.Type)
+			log.Printf("storage config loaded: %s", storageConf.Type)
 
 			storageInterfaces = append(storageInterfaces, loaded)
 		}
 		if len(storageInterfaces) <= 0 {
-			panic("No storages were configured.")
+			panic("no storage was configured.")
 		}
 
 		// show verbose messages or not
@@ -164,13 +160,13 @@ func interpretWithinHours(delimitedWithinHours string) ShootWithinHoursConfig {
 	from, err := strconv.Atoi(hours[0])
 	if err != nil {
 		from = 0
-		log.Println("Invalid shoot_within_hours from, will use 0")
+		log.Printf("invalid shoot_within_hours.from value, fallback to 0")
 	}
 
 	to, err := strconv.Atoi(hours[1])
 	if err != nil {
 		to = 24
-		log.Println("Invalid shoot_within_hours to, will use 24")
+		log.Printf("invalid shoot_within_hours.to value, fallback to 24")
 	}
 
 	return ShootWithinHoursConfig{from, to}
@@ -186,7 +182,7 @@ func capture(req ShootRequest) bool {
 
 	if !shootWithinHours.ShouldCapture(time.Now()) {
 		if isVerbose {
-			log.Println("Aborting capture as not within configured shooting hours")
+			log.Printf("not in configured shooting hours, aborting...")
 		}
 		return result
 	}
@@ -200,22 +196,22 @@ func capture(req ShootRequest) bool {
 		for _, storage := range storageInterfaces {
 			if err := storage.Save(filename, bytes); err == nil {
 				if isVerbose {
-					log.Printf("Saved %d bytes to storage: %+v\n", len(bytes), storage)
+					log.Printf("saved %d bytes to storage: %+v", len(bytes), storage)
 				}
 				result = true
 			} else {
-				log.Printf("*** Failed to store image: %s\n", err)
+				log.Printf("*** failed to store image: %s", err)
 			}
 		}
 	} else {
-		log.Printf("*** Image capture failed: %s\n", err)
+		log.Printf("*** image capture failed: %s", err)
 	}
 
 	return result
 }
 
 func main() {
-	log.Println("Starting up...")
+	log.Printf("starting up...")
 
 	timer := time.NewTicker(time.Duration(shootIntervalMinutes) * time.Minute)
 	quitter := make(chan struct{})
@@ -245,7 +241,7 @@ func main() {
 				CameraParams: cameraParams,
 			})
 		case <-quitter:
-			log.Println("Shutting down...")
+			log.Printf("shutting down...")
 			os.Exit(1)
 		}
 	}
