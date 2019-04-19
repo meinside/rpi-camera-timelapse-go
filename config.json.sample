@@ -6,7 +6,14 @@
 		"--timeout": 1,
 		"--brightness": 50,
 		"--quality": 90,
-		"--hflip": null
+		"--hflip": null,
+		"--awb": "fluorescent",
+		"--exposure": "auto",
+		"--rotation": 0,
+		"--roi": "0.0,0.0,1.0,1.0",
+		"--roi": "0.0,0.0,1.0,1.0",
+		"--drc": "high",
+		"--metering": "matrix"
 	},
 	"storages": [
 		{

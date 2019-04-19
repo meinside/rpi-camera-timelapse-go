@@ -15,15 +15,7 @@ You need:
 * [golang installed on Raspberry Pi](https://github.com/meinside/rpi-configs/blob/master/bin/prep_go.sh)
 * and this README.md.
 
-## 2. How can I build it?
-
-```bash
-$ go get -d github.com/meinside/rpi-camera-timelapse-go
-$ cd $GOPATH/src/github.com/meinside/rpi-camera-timelapse-go
-$ go build
-```
-
-## 3. How can I run it?
+## 2. How can I configure it?
 
 You need to create your own config file.
 
@@ -64,7 +56,27 @@ You can configure it to save files locally, send via SMTP, upload to Dropbox or 
 
 When not needed, just remove the unwanted one from __storages__.
 
-After the configuration is finished, just execute the binary:
+## 3. How can I build it?
+
+### A. Manually
+
+```bash
+$ go get -d github.com/meinside/rpi-camera-timelapse-go
+$ cd $GOPATH/src/github.com/meinside/rpi-camera-timelapse-go
+$ go build
+```
+
+### B. With docker-compose
+
+```bash
+$ docker-compose build
+```
+
+## 4. How can I run it?
+
+### A. Manually
+
+Just execute the compiled binary:
 
 ```bash
 $ ./rpi-camera-timelapse-go
@@ -72,9 +84,15 @@ $ ./rpi-camera-timelapse-go
 
 If nothing goes wrong, images will be captured and stored periodically as you configured.
 
+### B. With docker-compose
+
+```bash
+$ docker-compose run app
+```
+
 ## 4. How can I run it as a service?
 
-### systemd
+### A. With systemd
 
 ```bash
 $ sudo cp systemd/rpi-camera-timelapse-go.service /lib/systemd/system/
@@ -96,6 +114,12 @@ If you want to launch it automatically on boot:
 $ sudo systemctl enable rpi-camera-timelapse-go.service
 ```
 
+### B. With docker-compose
+
+```bash
+$ docker-compose up -d
+```
+
 ## 5. How do I merge captured images to a timelapse video?
 
 Use ffmpeg:
@@ -111,3 +135,4 @@ Please open an issue.
 ## 999. License?
 
 MIT
+

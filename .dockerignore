@@ -1,0 +1,11 @@
+.git
+.gitignore
+README.md
+config.json.sample
+
+systemd/
+
+Dockerfile
+docker-compose.yaml
+
+rpi-camera-timelapse-go

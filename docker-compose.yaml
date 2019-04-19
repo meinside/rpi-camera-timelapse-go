@@ -1,0 +1,12 @@
+version: "3.7"
+services:
+  app:
+    build: .
+    image: rpi-timelapse:latest
+    devices:
+      - "/dev/vchiq:/dev/vchiq"
+#    volumes:
+#      - "${HOME}/.aws/credentials:/root/.aws/credentials:ro"
+#      - "${HOME}/.aws/config:/root/.aws/config:ro"
+    restart: always
+    command: app
