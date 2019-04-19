@@ -1,6 +1,6 @@
 # Dockerfile for Golang application
 
-FROM balenalib/raspberrypi3-debian-golang:latest
+FROM balenalib/raspberrypi3-debian-golang:latest AS builder
 
 # Working directory outside $GOPATH
 WORKDIR /src
@@ -17,6 +17,11 @@ RUN CGO_ENABLED=0 go build \
 		-installsuffix 'static' \
 		-o /app \
 		.
+
+FROM balenalib/raspberrypi3:latest AS final
+
+# Copy files from temporary image
+COPY --from=builder /app /
 
 # for rpi binaries
 RUN apt-get update -y && \
