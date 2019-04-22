@@ -68,8 +68,22 @@ $ go build
 
 ### B. With docker-compose
 
+#### a. Raspberry Pi 3B, 3B+
+
 ```bash
 $ docker-compose build
+```
+
+#### b. Raspberry Pi 2
+
+```bash
+$ docker-compose build --build-arg RPI=raspberry-pi2
+```
+
+#### c. Raspberry Pi B / Zero
+
+```bash
+$ docker-compose build --build-arg RPI=raspberry-pi
 ```
 
 ## 4. How can I run it?
