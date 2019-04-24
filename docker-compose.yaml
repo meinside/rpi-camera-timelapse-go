@@ -5,8 +5,21 @@ services:
     image: rpi-timelapse:latest
     devices:
       - "/dev/vchiq:/dev/vchiq"
-#    volumes:
-#      - "${HOME}/.aws/credentials:/root/.aws/credentials:ro"
-#      - "${HOME}/.aws/config:/root/.aws/config:ro"
+    volumes:
+      # for local storage
+      - type: volume
+        source: rpi-timelapse-vol
+        target: /timelapse
+      # for AWS credentials
+#     - type: bind
+#       source: ${HOME}/.aws/credentials
+#       target: /root/.aws/credentials
+#       read_only: true
+#     - type: bind
+#       source: ${HOME}/.aws/config
+#       target: /root/.aws/config
+#       read_only: true
     restart: always
     command: app
+volumes:
+  rpi-timelapse-vol:
