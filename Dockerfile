@@ -1,7 +1,7 @@
 # Dockerfile for Golang application
 
 # https://www.balena.io/docs/reference/base-images/base-images-ref/
-ARG RPI=raspberrypi3
+ARG RPI=raspberrypi4-64
 
 FROM balenalib/$RPI-debian-golang:latest AS builder
 
@@ -28,7 +28,7 @@ COPY --from=builder /app /
 
 # for rpi binaries
 RUN apt-get update -y && \
-		apt-get install -y apt-utils libraspberrypi-bin
+		apt-get install -y apt-utils libcamera-apps-lite
 
 # Copy config file
 COPY ./config.json /
