@@ -5,8 +5,8 @@ import (
 	"io/ioutil"
 	path "path/filepath"
 
-	"github.com/dropbox/dropbox-sdk-go-unofficial/dropbox"
-	"github.com/dropbox/dropbox-sdk-go-unofficial/dropbox/files"
+	"github.com/dropbox/dropbox-sdk-go-unofficial/v6/dropbox"
+	"github.com/dropbox/dropbox-sdk-go-unofficial/v6/dropbox/files"
 )
 
 // storage interface for saving files on Dropbox
@@ -41,12 +41,9 @@ func (s *DropboxStorage) Save(filename string, bytes []byte) error {
 
 	dst := path.Join(s.path, filename)
 
-	_, err := s.client.Upload(&files.CommitInfo{
-		Path:       dst,
-		Mode:       &files.WriteMode{Tagged: dropbox.Tagged{"overwrite"}}, // overwrite
-		Autorename: false,
-		Mute:       false,
-	}, reader)
+	arg := files.NewUploadArg(dst)
+	arg.CommitInfo.Mode = &files.WriteMode{Tagged: dropbox.Tagged{Tag: "overwrite"}} // overwrite
+	_, err := s.client.Upload(arg, reader)
 
 	return err
 }

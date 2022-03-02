@@ -60,7 +60,6 @@ func (hoursConfig ShootWithinHoursConfig) ShouldCapture(now time.Time) bool {
 }
 
 // variables
-var captureChannel chan ShootRequest
 var shootIntervalMinutes int
 var shootWithinHours ShootWithinHoursConfig
 var imageWidth, imageHeight int
@@ -188,7 +187,7 @@ func capture(req ShootRequest) bool {
 	}
 
 	// capture image
-	if bytes, err := camera.CaptureRaspiStill(req.ImageWidth, req.ImageHeight, req.CameraParams); err == nil {
+	if bytes, err := camera.CaptureStillImage(camera.LibCameraStillBin, req.ImageWidth, req.ImageHeight, req.CameraParams); err == nil {
 		// generate a filename with current timestamp
 		filename := fmt.Sprintf("%s.%s", time.Now().Format(time.RFC3339), imageExtension)
 
