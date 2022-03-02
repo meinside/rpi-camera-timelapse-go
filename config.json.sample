@@ -4,16 +4,13 @@
 	"image_height": 1200,
 	"camera_params": {
 		"--timeout": 500,
-		"--brightness": 50,
 		"--quality": 90,
-		"--hflip": null,
-		"--awb": "fluorescent",
-		"--exposure": "auto",
+		"--awb": "auto",
+		"--exposure": "normal",
 		"--rotation": 0,
 		"--roi": "0.0,0.0,1.0,1.0",
 		"--roi": "0.0,0.0,1.0,1.0",
-		"--drc": "high",
-		"--metering": "matrix"
+		"--metering": "centre"
 	},
 	"storages": [
 		{
