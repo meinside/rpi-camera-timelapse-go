@@ -188,8 +188,8 @@ func capture(req ShootRequest) bool {
 
 	// capture image
 	if bytes, err := camera.CaptureStillImage(camera.LibCameraStillBin, req.ImageWidth, req.ImageHeight, req.CameraParams); err == nil {
-		// generate a filename with current timestamp
-		filename := fmt.Sprintf("%s.%s", time.Now().Format(time.RFC3339), imageExtension)
+		// generate a filename with current timestamp (based on time.RFC3339, but remove `:`)
+		filename := fmt.Sprintf("%s.%s", time.Now().Format(`2006-01-02_150405Z0700`), imageExtension)
 
 		// store captured image
 		for _, storage := range storageInterfaces {
