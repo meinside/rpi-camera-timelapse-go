@@ -12,7 +12,7 @@ You need:
 
 * Raspberry Pi
 * Raspberry Pi Camera Module enabled, and its cable correctly connected
-* [golang installed on Raspberry Pi](https://github.com/meinside/rpi-configs/blob/master/bin/prep_go.sh)
+* [golang installed on Raspberry Pi](https://github.com/meinside/dotfiles/blob/master/bin/install_go.sh)
 * and this README.md.
 
 ## 2. How can I configure it?
@@ -68,7 +68,7 @@ $ go build
 
 ### B. With docker-compose
 
-#### a. Raspberry Pi 3B, 3B+
+#### a. Raspberry Pi 3B, 3B+, 4B
 
 ```bash
 $ docker-compose build
