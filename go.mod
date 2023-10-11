@@ -11,7 +11,7 @@ require (
 require (
 	github.com/golang/protobuf v1.4.2 // indirect
 	github.com/jmespath/go-jmespath v0.4.0 // indirect
-	golang.org/x/net v0.7.0 // indirect
+	golang.org/x/net v0.17.0 // indirect
 	golang.org/x/oauth2 v0.0.0-20201208152858-08078c50e5b5 // indirect
 	google.golang.org/appengine v1.6.6 // indirect
 	google.golang.org/protobuf v1.25.0 // indirect
