@@ -109,8 +109,8 @@ $ docker-compose up
 ### A. With systemd
 
 ```bash
-$ sudo cp systemd/rpi-camera-timelapse-go.service /lib/systemd/system/
-$ sudo vi /lib/systemd/system/rpi-camera-timelapse-go.service
+$ sudo cp systemd/rpi-camera-timelapse-go.service /etc/systemd/system/
+$ sudo vi /etc/systemd/system/rpi-camera-timelapse-go.service
 ```
 
 and edit **User**, **Group**, **WorkingDirectory**, and **ExecStart** values.
