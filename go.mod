@@ -1,6 +1,6 @@
 module github.com/meinside/rpi-camera-timelapse-go
 
-go 1.21.3
+go 1.23.0
 
 require (
 	github.com/aws/aws-sdk-go v1.51.1
@@ -9,10 +9,7 @@ require (
 )
 
 require (
-	github.com/golang/protobuf v1.5.4 // indirect
 	github.com/jmespath/go-jmespath v0.4.0 // indirect
-	golang.org/x/oauth2 v0.18.0 // indirect
+	golang.org/x/oauth2 v0.27.0 // indirect
 	golang.org/x/text v0.14.0 // indirect
-	google.golang.org/appengine v1.6.8 // indirect
-	google.golang.org/protobuf v1.33.0 // indirect
 )
